@@ -1,5 +1,6 @@
 package com.teqmonic.springsecurityjwt.service;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,12 +12,14 @@ import com.teqmonic.springsecurityjwt.model.exception.UserCreationException;
 import com.teqmonic.springsecurityjwt.repository.RoleRepository;
 import com.teqmonic.springsecurityjwt.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class AuthenticationService {
 
 	private final UserRepository userRepository;
@@ -30,19 +33,32 @@ public class AuthenticationService {
 	public boolean registerUser(RegistrationDTO registrationDTO) throws UserCreationException {
 		log.info("Start creation of new user {}", registrationDTO.userName());
 
-		roleRepository.findByAuthority(USER_AUTHORITY).ifPresentOrElse(roleEntity -> {
+		roleRepository.findByAuthority(USER_AUTHORITY).ifPresentOrElse(roleEntity -> 
+		{
+		 try {		
 			userRepository.save(UserEntity.builder()
 					.userName(registrationDTO.userName())
 					.password(encoder.encode(registrationDTO.password()))
 					.roles(Set.of(roleEntity))
 					.build());
-		}, () -> {
-			log.error("User creation failed for the user ", registrationDTO.userName());
-			throw new UserCreationException("User creation failed for the user " + registrationDTO.userName());
-		});
+		
+		    }
+		 catch (Exception e) { // handle data integrity exceptions
+		    handleException(registrationDTO.userName());
+		  }
+	    }, 
+		  () -> handleException(registrationDTO.userName()));
 
 		log.info("User {} with authority {} has been created. ", registrationDTO.userName(), USER_AUTHORITY);
 		return Boolean.TRUE;
+	}
+
+	/**
+	 * @param registrationDTO
+	 */
+	private void handleException(String userName) {
+		log.error("User creation failed for the user ", userName);
+		throw new UserCreationException("User creation failed for the user " + userName);
 	}
 
 }

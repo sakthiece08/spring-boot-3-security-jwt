@@ -13,9 +13,7 @@ import com.teqmonic.springsecurityjwt.model.exception.UserCreationException;
 import com.teqmonic.springsecurityjwt.service.AuthenticationService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -28,7 +26,6 @@ public class AuthenticationController {
 		try {
 			authenticationService.registerUser(registration);
 		} catch (UserCreationException ex) {
-			log.error("Error {}", ex);
 			return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<String>("success", HttpStatus.CREATED);
