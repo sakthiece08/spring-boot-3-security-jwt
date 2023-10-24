@@ -12,3 +12,5 @@ spring:
     properties:
       hibernate.format_sql: true
     database: postgresql
+    
+logging.level.org.springframework.security: TRACE
