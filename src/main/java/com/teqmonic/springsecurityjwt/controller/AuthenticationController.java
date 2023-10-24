@@ -1,5 +1,7 @@
 package com.teqmonic.springsecurityjwt.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,10 @@ public class AuthenticationController {
 	
 	private final TokenService tokenService;
 	
-	private final AuthenticationManager authenticationManager;
+	
+	@Qualifier(value = "userRegistrationAuthManager")
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
 	@PostMapping("/register")
 	public HttpEntity<String> register(@RequestBody RegistrationDTO registration) {
