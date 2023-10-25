@@ -1,4 +1,6 @@
-# spring-security-jwt
+# spring-security-jwt (Using asymmetric keys) 
+
+Asymmetric key pair - One key to sign the token and another key to verify the signature
 
 Java application code for a Spring Boot 3+, Spring Data JPA, Spring Security, Spring Web, and OAuth2Resource server application which allows users to login or register using HTTP POST requests, then view endpoints based on their roles.
 
