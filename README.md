@@ -2,7 +2,9 @@
 
 Asymmetric key pair - One key to sign the token and another key to verify the signature. Private key to encode the token and Public key to decode the same.
 
-Java application code for a Spring Boot 3+, Spring Data JPA, Spring Security, Spring Web, and OAuth2Resource server application which allows users to login or register using HTTP POST requests, then view endpoints based on their roles.
+This service has a Java application code for a Spring Boot 3+, Spring Data JPA, Spring Security, Spring Web, and OAuth2Resource server application which allows users to login or register using HTTP POST requests, then view endpoints based on their roles.
+
+Database: PostgreSQL
 
 Users are authenticated against a database using a custom UserDetailsService and AuthenticationManager along with Spring Data JPA repositories.
 
