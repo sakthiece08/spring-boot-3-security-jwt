@@ -9,3 +9,18 @@ Database: PostgreSQL
 Users are authenticated against a database using a custom UserDetailsService and AuthenticationManager along with Spring Data JPA repositories.
 
 When a successful login occurs, a JWT is generated and sent back to the user, the user can use this JWT in the header as a bearer token to access authenticated routes according to their roles
+
+## JWT components
+```
+@Bean
+JwtEncoder jwtEncoder() {
+	JWK jwk = new RSAKey.Builder(keyProperties.getPublicKey()).privateKey(keyProperties.getPrivateKey()).build();
+	JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+	return new NimbusJwtEncoder(jwks);
+}
+
+@Bean
+JwtDecoder decoder() {
+	return NimbusJwtDecoder.withPublicKey(keyProperties.getPublicKey()).build();
+}
+```
