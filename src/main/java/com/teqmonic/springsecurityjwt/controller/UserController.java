@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user")
 public class UserController {
 
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('USER')") // since DefaultMethodSecurityExpressionHandler is set with prefix "ROLE_" in the config
 	@GetMapping("/")
 	public String home(Principal principal) {
 		return "Hello, " + principal.getName();

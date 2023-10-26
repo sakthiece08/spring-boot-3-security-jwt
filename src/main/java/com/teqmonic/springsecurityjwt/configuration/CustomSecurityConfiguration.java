@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -92,7 +93,13 @@ public class CustomSecurityConfiguration {
 		return new ProviderManager(daoAuthenticationProvider);
 	}
 	
-	
+	/**
+	 * Leveraging multiple SecurityFilterChain beans each targeted for specific paths
+	 * 
+	 * @param http
+	 * @return
+	 * @throws Exception
+	 */
 	
 	@Bean
 	@Order(1)
@@ -158,9 +165,27 @@ public class CustomSecurityConfiguration {
 		JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 		jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles"); // claims in the jwt token
 		jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+		//jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 		JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
 		jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 		return jwtConverter;
+	}
+	
+	/*
+	 * Overriding DefaultMethodSecurityExpressionHandler bean to add DefaultRolePrefix, so in the method level
+	 * authorization check, no need to add the prefix, instead just define the actual role hasRole('READ') for
+	 * hasRole('ROLE_READ') 
+	 * 
+	 * This DefaultMethodSecurityExpressionHandler bean and the above jwtAuthenticationConverter bean goes hand in hand.
+	 * The former is applied while parsing claims in the token and this bean is used while checking method level access.
+	 * 
+	 * 
+	 */
+	@Bean
+	DefaultMethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler() {
+		DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+		handler.setDefaultRolePrefix("ROLE_");
+		return handler;
 	}
 
 }

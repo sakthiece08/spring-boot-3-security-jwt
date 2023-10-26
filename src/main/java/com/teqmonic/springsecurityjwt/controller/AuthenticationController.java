@@ -45,6 +45,13 @@ public class AuthenticationController {
 		return new ResponseEntity<String>("success", HttpStatus.CREATED);
 	}
 	
+	/**
+	 * Authenticate the user and generate token
+	 * The authentication can be handled at filter level as well
+	 * 
+	 * @param registration
+	 * @return
+	 */
 	@PostMapping("/token")
 	public HttpEntity<LoginResponse> getToken(@RequestBody RegistrationDTO registration) {
 		Authentication authentication = authenticationManager.authenticate(
